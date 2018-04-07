@@ -1,0 +1,29 @@
+{
+  "name": "@oudyworks/graphql",
+  "version": "1.0.2",
+  "description": "Some tooling for GraphQL",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel source --out-dir npm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OudyWorks/graphql.git"
+  },
+  "keywords": [
+    "graphql"
+  ],
+  "author": "Ayoub Oudmane <ayoub@oudmane.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OudyWorks/graphql/issues"
+  },
+  "homepage": "https://github.com/OudyWorks/graphql#readme",
+  "dependencies": {
+    "graphql": "^0.13.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
