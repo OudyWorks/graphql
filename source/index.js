@@ -1,3 +1,3 @@
 export * from 'graphql'
-import {default as getConfig} from './getConfig'
-import {default as getInputObjectType} from './getInputObjectType'
+export {default as getConfig} from './getConfig'
+export {default as getInputObjectType} from './getInputObjectType'
