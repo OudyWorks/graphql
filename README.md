@@ -22,7 +22,7 @@ const Type = new GraphQLObjectType({
 })
 ```
 
-## getConfig
+## getConfig(Type)
 getConfig(Type) will return the fields used of **Type**, in graphql fields could be an object or a function, getConfig(Type) returns the object eitherwa
 
 ```js
@@ -41,7 +41,7 @@ let fields = getConfig(Type)
 // }
 ```
 
-## getInputObjectType
+## getInputObjectType(Type)
 getInputObjectType(Type) will create a GraphQLInputObjectType with the same fields of **Type**
 
 ```js
@@ -62,6 +62,9 @@ let inputType = getInputObjectType(Type)
 //     }
 // })
 ```
+
+## getErrorType(Type)
+get a type with the same fields of Type for Errors
 
 ## Scalar
 Scalar is a scalar type for grahql, it can be a String, Boolean, Integer, Float, Object or Array
