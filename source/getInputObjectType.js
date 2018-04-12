@@ -24,7 +24,7 @@ export default function getInputObjectType(ObjectType) {
         case 'GraphQLObjectType':
 
             return ObjectType._typeInput = new GraphQLInputObjectType({
-                name: `${ObjectType._typeConfig.name}Input`,
+                name: `${ObjectType.name}Input`,
                 fields() {
                     let fields = {},
                         _fields = getConfig(ObjectType)
