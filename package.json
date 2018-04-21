@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/OudyWorks/graphql#readme",
   "dependencies": {
+    "@oudyworks/entity": "^1.0.6",
     "case": "^1.5.4",
     "graphql": "^0.13.2",
     "plural": "^1.1.0"

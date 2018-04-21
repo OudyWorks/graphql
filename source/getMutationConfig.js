@@ -1,8 +1,11 @@
 import {
     GraphQLObjectType,
     GraphQLNonNull,
-    GraphQLID
-} from 'graphql'
+    GraphQLID,
+    GraphQLBoolean,
+    GraphQLList,
+    GraphQLString
+} from './'
 import Case from 'case'
 import getInputObjectType from './getInputObjectType'
 import getErrorType from './getErrorType'

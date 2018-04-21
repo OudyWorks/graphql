@@ -1,8 +1,10 @@
 import {
     GraphQLObjectType,
     GraphQLNonNull,
-    GraphQLID
-} from 'graphql'
+    GraphQLID,
+    GraphQLList,
+    GraphQLInt
+} from './'
 import Case from 'case'
 import plural from 'plural'
 
@@ -22,7 +24,7 @@ export default function getQueryConfig(ObjectType, resolve,  options = {fields: 
                 fields: Object.assign(
                     {
                         list: {
-                            type: new GraphQLList(Type)
+                            type: new GraphQLList(ObjectType)
                         },
                         total: {
                             type: GraphQLInt
