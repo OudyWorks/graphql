@@ -1,7 +1,5 @@
 import {
     GraphQLObjectType,
-    GraphQLNonNull,
-    GraphQLID,
     GraphQLList,
     GraphQLInt
 } from './'

@@ -2,7 +2,7 @@ import {
     GraphQLObjectType,
     GraphQLNonNull,
     GraphQLID
-} from 'graphql'
+} from './'
 import Case from 'case'
 
 /**

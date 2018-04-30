@@ -1,6 +1,6 @@
 import {
     GraphQLObjectType
-} from 'graphql'
+} from './'
 
 /**
  * get the config of a type

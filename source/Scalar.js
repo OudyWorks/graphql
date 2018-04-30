@@ -1,4 +1,4 @@
-import { GraphQLScalarType } from 'graphql'
+import { GraphQLScalarType } from './'
 import { Kind } from 'graphql/language'
 
 function parseLiteral(ast) {

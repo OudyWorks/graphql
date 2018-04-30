@@ -1,12 +1,11 @@
 import {
-    GraphQLInputObjectType,
     GraphQLObjectType,
     GraphQLList,
     GraphQLScalarType,
     GraphQLEnumType,
     GraphQLUnionType,
     GraphQLString
-} from 'graphql'
+} from './'
 import getConfig from './getConfig'
 
 /**

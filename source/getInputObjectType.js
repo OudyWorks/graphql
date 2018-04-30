@@ -5,7 +5,7 @@ import {
     GraphQLScalarType,
     GraphQLEnumType,
     GraphQLUnionType
-} from 'graphql'
+} from './'
 import getConfig from './getConfig'
 import Scalar from './Scalar'
 
