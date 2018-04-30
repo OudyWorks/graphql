@@ -7,7 +7,10 @@ import {
     getMutationConfig,
     getQueryConfig,
     getListQueryConfig,
-    getSubscriptionConfig
+    getSubscriptionConfig,
+    GraphQLNonNull,
+    GraphQLID,
+    GraphQLString
 } from '../'
 import deepClone from 'lodash.clonedeep'
 import flattenObj from 'flatten-obj'
@@ -102,25 +105,105 @@ export default function extender (Entity) {
         return getErrorType(this.type, moreFields)
     }
     
-    GraphQLEntity.mutation = Symbol()
-    GraphQLEntity[GraphQLEntity.mutation] = function(resolve, options = {fields: {}, args: {}, errorFields: {}}) {
-        return getMutationConfig(this.type, resolve, options)
-    }
-    
     GraphQLEntity.query = Symbol()
     GraphQLEntity[GraphQLEntity.query] = function(resolve, options = {args: {}}) {
-        return getQueryConfig(this.type, resolve, options)
+        this[Entity.context].forEach(
+            key =>
+                options.args[key] = {
+                    type: new GraphQLNonNull(GraphQLID)
+                }
+        )
+        return getQueryConfig(
+            this.type,
+            (source, args, context, info) => {
+                this[Entity.context].forEach(
+                    key =>
+                        context[key] = args[key] || context[key]
+                )
+                return resolve(source, args, context, info)
+            },
+            options
+        )
     }
     
     GraphQLEntity.listQuery = Symbol()
     GraphQLEntity[GraphQLEntity.listQuery] = function(resolve,  options = {fields: {}, args: {}}) {
-        return getListQueryConfig(this.type, resolve, options)
+        this[Entity.context].forEach(
+            key =>
+                options.args[key] = {
+                    type: new GraphQLNonNull(GraphQLID)
+                }
+        )
+        return getListQueryConfig(
+            this.type,
+            (source, args, context, info) => {
+                this[Entity.context].forEach(
+                    key =>
+                        context[key] = args[key] || context[key]
+                )
+                return resolve(source, args, context, info)
+            },
+            options
+        )
+    }
+
+    GraphQLEntity.mutation = Symbol()
+    GraphQLEntity[GraphQLEntity.mutation] = function(resolve, options = {fields: {}, args: {}, errorFields: {}}) {
+        this[Entity.context].forEach(
+            key => {
+                options.args[key] = {
+                    type: new GraphQLNonNull(GraphQLID)
+                }
+                options.errorFields[key] = {
+                    type: GraphQLString
+                }
+            }
+        )
+        return getMutationConfig(
+            this.type,
+            (source, args, context, info) => {
+                this[Entity.context].forEach(
+                    key =>
+                        context[key] = args[key] || context[key]
+                )
+                return resolve(source, args, context, info)
+            },
+            options
+        )
     }
 
     GraphQLEntity.pubsub = new PubSub()
     GraphQLEntity.subscription = Symbol()
-    GraphQLEntity[GraphQLEntity.subscription] = function(subscribe, options = {args: {}}) {
-        return getSubscriptionConfig(this.type, subscribe, options)
+    GraphQLEntity[GraphQLEntity.subscription] = function(subscribe, options = {args: {}, resolve: undefined}) {
+        this[Entity.context].forEach(
+            key =>
+                options.args[key] = {
+                    type: new GraphQLNonNull(GraphQLID)
+                }
+        )
+        if(!options.resolve)
+            options.resolve = (source, args, context, info) => {
+                this[Entity.context].forEach(
+                    key =>
+                        context[key] = args[key] || context[key]
+                )
+                return source
+            }
+        else {
+            let resolve = options.resolve
+            options.resolve = (source, args, context, info) => {
+                this[Entity.context].forEach(
+                    key =>
+                        context[key] = args[key] || context[key]
+                )
+                return resolve(source, args, context, info)
+            }
+        }
+        return getSubscriptionConfig(
+            this.type,
+            subscribe,
+            options
+        )
     }
 
     GraphQLEntity.graphql = FirstGraphQLEntity && FirstGraphQLEntity.graphql || undefined
