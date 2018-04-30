@@ -85,9 +85,8 @@ export default function extender (Entity) {
         static get config() {
             return {
                 type: this.type,
-                resolve(args, context) {
-                    return this.load(args.id, context)
-                }
+                resolve: (args, context) =>
+                    this.load(args.id, context)
             }
         }
     }
