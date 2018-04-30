@@ -16,6 +16,7 @@ import {
 } from 'deep-object-diff'
 import { PubSub } from 'graphql-subscriptions'
 import FirstGraphQLEntity from './index'
+import Case from 'case'
 const flatten = flattenObj()
 
 export default function extender (Entity) {
@@ -86,7 +87,7 @@ export default function extender (Entity) {
             return {
                 type: this.type,
                 resolve: (args, context) =>
-                    this.load(args.id, context)
+                    this.load(args[Case.camel(this.type.name)], context)
             }
         }
     }
