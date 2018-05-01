@@ -3,29 +3,27 @@ import {
     GraphQLObjectType,
     Entity
 } from '../'
-import includeAll from 'include-all'
+import recursiveReadSync from 'recursive-readdir-sync'
 import path from 'path'
 
 export default function getSchema(directory) {
 
-    let _types = includeAll({
-            dirname: path.join(directory),
-            // pathFilter: /types\/[A-z]+.js$/,
-            flatten: true,
-            keepDirectoryPath: true
-        }),
-        queryFields = {},
+    let queryFields = {},
         mutationFields = {},
         subscriptionFields = {},
-        validTypes = Object.keys(_types).filter(
-            key =>
-                _types[key].default.graphql == Entity.graphql && key.match(/types\/[A-z]+.js$/)
+        files = recursiveReadSync(directory),
+        validTypes = files.filter(
+            file =>
+                file.match(/types\/[A-z]+.js$/)
         ),
         types = {}
 
     validTypes.forEach(
-        key =>
-            types[key] = _types[key].default
+        file => {
+            let Type = require(file).default
+            if(Type.graphql == Entity.graphql)
+                types[file] = Type
+        }
     )
 
     validTypes = Object.keys(types)
