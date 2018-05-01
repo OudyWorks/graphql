@@ -4,7 +4,8 @@ import {
     GraphQLList,
     GraphQLScalarType,
     GraphQLEnumType,
-    GraphQLUnionType
+    GraphQLUnionType,
+    GraphQLID
 } from './'
 import getConfig from './getConfig'
 import Scalar from './Scalar'
@@ -12,9 +13,19 @@ import Scalar from './Scalar'
 /**
  * get an GraphQLInputObjectType from GraphQLObjectType
  * @param {(GraphQLObjectType|GraphQLList|GraphQLScalarType|GraphQLEnumType|GraphQLUnionType)} ObjectType Type to convert
+ * @param {Boolean} deep
  * @returns Input type
  */
-export default function getInputObjectType(ObjectType) {
+export default function getInputObjectType(ObjectType, deep = false) {
+
+    if(deep && ObjectType._typeConfig) {
+
+        let _fields = getConfig(ObjectType)
+
+        if(_fields.id)
+            return GraphQLID
+
+    }
 
     if(ObjectType._typeInput)
         return ObjectType._typeInput
@@ -31,7 +42,7 @@ export default function getInputObjectType(ObjectType) {
                     Object.keys(_fields).forEach(
                         key =>
                             fields[key] = {
-                                type: getInputObjectType(_fields[key].type)
+                                type: getInputObjectType(_fields[key].type, true)
                             }
                     )
                     return fields
