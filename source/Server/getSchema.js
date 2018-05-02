@@ -16,13 +16,71 @@ export default function getSchema(directory) {
             file =>
                 file.match(/types\/[A-z]+.js$/)
         ),
-        types = {}
+        types = {},
+        queries = files.filter(
+            file =>
+                file.match(/queries\/[A-z]+.js$/)
+        ),
+        mutations = files.filter(
+            file =>
+                file.match(/mutations\/[A-z]+.js$/)
+        ),
+        subscriptions = files.filter(
+            file =>
+                file.match(/subscriptions\/[A-z]+.js$/)
+        )
+
+    queries.forEach(
+        file => {
+            try {
+                Object.assign(queryFields, require(file).default)
+            } catch(error) {
+                throw {
+                    message: `Error while loading the query ${file}`,
+                    error
+                }
+            }
+        }
+    )
+
+    mutations.forEach(
+        file => {
+            try {
+                Object.assign(mutationFields, require(file).default)
+            } catch(error) {
+                throw {
+                    message: `Error while loading the mutation ${file}`,
+                    error
+                }
+            }
+        }
+    )
+
+    subscriptions.forEach(
+        file => {
+            try {
+                Object.assign(subscriptionFields, require(file).default)
+            } catch(error) {
+                throw {
+                    message: `Error while loading the subscription ${file}`,
+                    error
+                }
+            }
+        }
+    )
 
     validTypes.forEach(
         file => {
-            let Type = require(file).default
-            if(Type.graphql == Entity.graphql)
-                types[file] = Type
+            try {
+                let Type = require(file).default
+                if(Type.graphql == Entity.graphql)
+                    types[file] = Type
+            } catch(error) {
+                throw {
+                    message: `Error while loading the type ${file}`,
+                    error
+                }
+            }
         }
     )
 
@@ -48,19 +106,26 @@ export default function getSchema(directory) {
             Object.assign(subscriptionFields, types[key][types[key].subscription]())
     )
 
-    return new GraphQLSchema({
-        query: new GraphQLObjectType({
+    let schema = {}
+
+    if(Object.keys(queryFields).length)
+        schema.query = new GraphQLObjectType({
             name: 'Query',
             fields: queryFields
-        }),
-        mutation: new GraphQLObjectType({
+        })
+
+    if(Object.keys(mutationFields).length)
+        schema.mutation = new GraphQLObjectType({
             name: 'Mutation',
             fields: mutationFields
-        }),
-        subscription: new GraphQLObjectType({
+        })
+
+    if(Object.keys(subscriptionFields).length)
+        schema.subscription = new GraphQLObjectType({
             name: 'Subscription',
             fields: subscriptionFields
         })
-    })
+
+    return new GraphQLSchema(schema)
 
 }
