@@ -4,12 +4,11 @@ import {
     Entity
 } from '../'
 import recursiveReadSync from 'recursive-readdir-sync'
-import path from 'path'
 
-const typesRgeex = new RegExp(`types\\${path.sep}[A-z]+.js$`),
-    queriesRgeex = new RegExp(`queries\\${path.sep}[A-z]+.js$`),
-    mutationsRgeex = new RegExp(`mutations\\${path.sep}[A-z]+.js$`),
-    subscriptionsRgeex = new RegExp(`subscriptions\\${path.sep}[A-z]+.js$`)
+const typesRgeex = /types[\\\/][a-zA-Z0-9]+.js$/,
+    queriesRgeex = /queries[\\\/][a-zA-Z0-9]+.js$/,
+    mutationsRgeex = /mutations[\\\/][a-zA-Z0-9]+.js$/,
+    subscriptionsRgeex = /subscriptions[\\\/][a-zA-Z0-9]+.js$/
 
 export default function getSchema(directory) {
 
