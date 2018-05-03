@@ -1,7 +1,7 @@
 import Entity from '@oudyworks/entity/MongoDB'
 import extender from './extender'
 import Case from 'case'
-import {withFilter} from "graphql-subscriptions/dist/index";
+import {withFilter} from 'graphql-subscriptions'
 
 const   GraphQLEntity = extender(Entity)
 
@@ -56,9 +56,7 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
                                 this.clear(args.id)
                                 GraphQLEntity.pubsub.publish(
                                     name,
-                                    {
-                                        [name]: object
-                                    }
+                                    object
                                 )
                             }
                             return {
@@ -78,12 +76,12 @@ MongoDBEntity[MongoDBEntity.subscription] = function(subscribe, options = {args:
     if(!subscribe)
         // subscribe = (source, args, context, info) => {
         subscribe = withFilter(
-            () =>
+            (source, args, context, info) =>
                 GraphQLEntity.pubsub.asyncIterator(Case.camel(this.name)),
             (source, args, context, info) => {
                 if(source) {
                     if(args.id)
-                        return args.id == `${source[Case.camel(this.name)].id}`
+                        return args.id == `${source.id}`
                     return true
                 }
                 return false

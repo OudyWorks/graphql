@@ -29,28 +29,23 @@ export default class Index {
         // this.app.use(bodyParser.json({limit: '1mb'}))
 
         this.app.use(/^\/$/, graphql(
-            request => ({
-                schema,
-                context: {
-                    timestamp: +new Date()
-                }
-            })
+            request =>
+                this.context(request).then(
+                    context =>
+                        ({
+                            schema,
+                            context
+                        })
+                )
         ))
 
         this.server.on('request', this.app)
 
         this.subscription = new SubscriptionServer({
-            execute(schema, document, rootValue, contextValue, variableValues, operationName) {
-                let context = {
-                    timestamp: +new Date()
-                }
-                return execute(schema, document, rootValue, context, variableValues, operationName)
-            },
-            subscribe(schema, document, rootValue, contextValue, variableValues, operationName) {
-                let context = {
-                    timestamp: +new Date()
-                }
-                return subscribe(schema, document, rootValue, context, variableValues, operationName)
+            execute,
+            subscribe,
+            onConnect: (connectionParams, webSocket, context) => {
+                return this.context(webSocket.upgradeReq, true)
             },
             schema
         }, {
@@ -84,6 +79,11 @@ export default class Index {
             }
         )
 
+    }
+    async context(request, subscription = false) {
+        return {
+            timestamp: +new Date()
+        }
     }
     graphiql(options = {endpointURL: '/'}) {
         this.app.use('/graphiql', graphiqlExpress(options))

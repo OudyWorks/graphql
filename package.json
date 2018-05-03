@@ -1,6 +1,6 @@
 {
   "name": "@oudyworks/graphql",
-  "version": "1.0.23",
+  "version": "1.0.25",
   "description": "Some tooling for GraphQL",
   "main": "index.js",
   "scripts": {
