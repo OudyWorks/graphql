@@ -6,6 +6,11 @@ import {
 import recursiveReadSync from 'recursive-readdir-sync'
 import path from 'path'
 
+const typesRgeex = new RegExp(`types\\${path.sep}[A-z]+.js$`),
+    queriesRgeex = new RegExp(`queries\\${path.sep}[A-z]+.js$`),
+    mutationsRgeex = new RegExp(`mutations\\${path.sep}[A-z]+.js$`),
+    subscriptionsRgeex = new RegExp(`subscriptions\\${path.sep}[A-z]+.js$`)
+
 export default function getSchema(directory) {
 
     let queryFields = {},
@@ -14,20 +19,20 @@ export default function getSchema(directory) {
         files = recursiveReadSync(directory),
         validTypes = files.filter(
             file =>
-                file.match(/types\/[A-z]+.js$/)
+                file.match(typesRgeex)
         ),
         types = {},
         queries = files.filter(
             file =>
-                file.match(/queries\/[A-z]+.js$/)
+                file.match(queriesRgeex)
         ),
         mutations = files.filter(
             file =>
-                file.match(/mutations\/[A-z]+.js$/)
+                file.match(mutationsRgeex)
         ),
         subscriptions = files.filter(
             file =>
-                file.match(/subscriptions\/[A-z]+.js$/)
+                file.match(subscriptionsRgeex)
         )
 
     queries.forEach(
