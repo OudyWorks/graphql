@@ -1,9 +1,9 @@
 import {
     GraphQLObjectType,
     GraphQLList,
-    GraphQLInt
+    GraphQLInt,
+    key
 } from './'
-import Case from 'case'
 import plural from 'plural'
 
 /**
@@ -16,9 +16,9 @@ import plural from 'plural'
  */
 export default function getQueryConfig(ObjectType, resolve,  options = {fields: {}, args: {}}) {
     return {
-        [Case.camel(plural(ObjectType.name))] : {
+        [key(ObjectType.pluralName || plural(ObjectType.name))] : {
             type: new GraphQLObjectType({
-                name: plural(ObjectType.name),
+                name: ObjectType.pluralName || plural(ObjectType.name),
                 fields: Object.assign(
                     {
                         list: {

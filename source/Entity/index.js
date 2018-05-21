@@ -3,6 +3,6 @@ import extender from './extender'
 
 const GraphQLEntity = extender(Entity)
 
-GraphQLEntity.graphql = Symbol()
+GraphQLEntity.graphql = Symbol('graphql')
 
 export default GraphQLEntity

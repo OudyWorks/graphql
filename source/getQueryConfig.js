@@ -1,9 +1,9 @@
 import {
     GraphQLObjectType,
     GraphQLNonNull,
-    GraphQLID
+    GraphQLID,
+    key
 } from './'
-import Case from 'case'
 
 /**
  * 
@@ -14,7 +14,7 @@ import Case from 'case'
  */
 export default function getQueryConfig(ObjectType, resolve, options = {args: {}}) {
     return {
-        [Case.camel(ObjectType.name)] : {
+        [key(ObjectType.name)] : {
             type: ObjectType,
             args: Object.assign(
                 {

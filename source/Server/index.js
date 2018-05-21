@@ -11,7 +11,7 @@ import url from 'url'
 import {maskErrors} from 'graphql-errors'
 import getSchema from './getSchema'
 
-export default class Index {
+export default class Server {
     constructor(server, schema) {
 
         if(!server)

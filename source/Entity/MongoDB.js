@@ -1,6 +1,6 @@
 import Entity from '@oudyworks/entity/MongoDB'
 import extender from './extender'
-import Case from 'case'
+import key from '../key'
 import {withFilter} from 'graphql-subscriptions'
 
 const   GraphQLEntity = extender(Entity)
@@ -36,7 +36,7 @@ MongoDBEntity[MongoDBEntity.listQuery] = function(resolve, options = {fields: {}
 
 MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {}, args: {}, errorFields: {}}) {
     if(!resolve) {
-        let name = Case.camel(this.name)
+        let name = key(this.name)
         resolve = (source, args, context, info) => {
             return this.load(args.id, context).then(
                 object =>
@@ -45,7 +45,7 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
                             if(bind.erred)
                                 return Promise.resolve(bind)
                             else
-                                return object.save().then(
+                                return object.save(bind).then(
                                     () =>
                                         Promise.resolve(bind)
                                 )
@@ -53,7 +53,6 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
                     ).then(
                         bind => {
                             if(bind.changed) {
-                                this.clear(args.id)
                                 GraphQLEntity.pubsub.publish(
                                     name,
                                     object
@@ -77,7 +76,7 @@ MongoDBEntity[MongoDBEntity.subscription] = function(subscribe, options = {args:
         // subscribe = (source, args, context, info) => {
         subscribe = withFilter(
             (source, args, context, info) =>
-                GraphQLEntity.pubsub.asyncIterator(Case.camel(this.name)),
+                GraphQLEntity.pubsub.asyncIterator(key(this.name)),
             (source, args, context, info) => {
                 if(source) {
                     if(args.id)

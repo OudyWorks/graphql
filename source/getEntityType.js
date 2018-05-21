@@ -8,7 +8,7 @@ export default function getEntityType(ObjectType) {
     Object.keys(config).forEach(
         key => {
 
-            switch(key, config[key].type.constructor.name) {
+            switch(config[key].type.constructor.name) {
 
                 case 'GraphQLScalarType':
 
@@ -45,7 +45,7 @@ export default function getEntityType(ObjectType) {
 
                     let _config = getConfig(config[key].type)
 
-                    if(_config.id)
+                    if(_config.id && !ObjectType.entityLess)
                         type[key] = String
 
                     else

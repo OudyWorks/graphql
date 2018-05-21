@@ -10,7 +10,8 @@ import {
     getSubscriptionConfig,
     GraphQLNonNull,
     GraphQLID,
-    GraphQLString
+    GraphQLString,
+    key
 } from '../'
 import deepClone from 'lodash.clonedeep'
 import flattenObj from 'flatten-obj'
@@ -19,7 +20,6 @@ import {
 } from 'deep-object-diff'
 import { PubSub } from 'graphql-subscriptions'
 import FirstGraphQLEntity from './index'
-import Case from 'case'
 const flatten = flattenObj()
 
 export default function extender (Entity) {
@@ -90,22 +90,22 @@ export default function extender (Entity) {
             return {
                 type: this.type,
                 resolve: (args, context) =>
-                    this.load(args[Case.camel(this.type.name)], context)
+                    this.load(args[key(this.type.name)], context)
             }
         }
     }
     
-    GraphQLEntity.input = Symbol()
+    GraphQLEntity.input = Symbol('input')
     GraphQLEntity[GraphQLEntity.input] = function() {
         return getInputObjectType(this.type)
     }
     
-    GraphQLEntity.error = Symbol()
+    GraphQLEntity.error = Symbol('error')
     GraphQLEntity[GraphQLEntity.error] = function(moreFields = {}) {
         return getErrorType(this.type, moreFields)
     }
     
-    GraphQLEntity.query = Symbol()
+    GraphQLEntity.query = Symbol('query')
     GraphQLEntity[GraphQLEntity.query] = function(resolve, options = {args: {}}) {
         this[Entity.context].forEach(
             key =>
@@ -126,7 +126,7 @@ export default function extender (Entity) {
         )
     }
     
-    GraphQLEntity.listQuery = Symbol()
+    GraphQLEntity.listQuery = Symbol('listQuery')
     GraphQLEntity[GraphQLEntity.listQuery] = function(resolve,  options = {fields: {}, args: {}}) {
         this[Entity.context].forEach(
             key =>
@@ -134,6 +134,7 @@ export default function extender (Entity) {
                     type: new GraphQLNonNull(GraphQLID)
                 }
         )
+        this.type.pluralName = this.pluralName
         return getListQueryConfig(
             this.type,
             (source, args, context, info) => {
@@ -147,7 +148,7 @@ export default function extender (Entity) {
         )
     }
 
-    GraphQLEntity.mutation = Symbol()
+    GraphQLEntity.mutation = Symbol('mutation')
     GraphQLEntity[GraphQLEntity.mutation] = function(resolve, options = {fields: {}, args: {}, errorFields: {}}) {
         this[Entity.context].forEach(
             key => {
@@ -173,7 +174,7 @@ export default function extender (Entity) {
     }
 
     GraphQLEntity.pubsub = new PubSub()
-    GraphQLEntity.subscription = Symbol()
+    GraphQLEntity.subscription = Symbol('subscription')
     GraphQLEntity[GraphQLEntity.subscription] = function(subscribe, options = {args: {}, resolve: undefined}) {
         this[Entity.context].forEach(
             key =>

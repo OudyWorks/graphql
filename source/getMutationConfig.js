@@ -4,9 +4,9 @@ import {
     GraphQLID,
     GraphQLBoolean,
     GraphQLList,
-    GraphQLString
+    GraphQLString,
+    key
 } from './'
-import Case from 'case'
 import getInputObjectType from './getInputObjectType'
 import getErrorType from './getErrorType'
 
@@ -21,12 +21,12 @@ import getErrorType from './getErrorType'
  */
 export default function getMutationConfig(ObjectType, resolve,  options = {fields: {}, args: {}, errorFields: {}}) {
     return {
-        [Case.camel(ObjectType.name)] : {
+        [key(ObjectType.name)] : {
             type: new GraphQLObjectType({
                 name: `${ObjectType.name}Mutation`,
                 fields: Object.assign(
                     {
-                        [Case.camel(ObjectType.name)]: {
+                        [key(ObjectType.name)]: {
                             type: ObjectType
                         },
                         erred: {
@@ -47,7 +47,7 @@ export default function getMutationConfig(ObjectType, resolve,  options = {field
             }),
             args: Object.assign(
                 {
-                    [Case.camel(ObjectType.name)]: {
+                    [key(ObjectType.name)]: {
                         type: new GraphQLNonNull(
                             getInputObjectType(ObjectType)
                         )
