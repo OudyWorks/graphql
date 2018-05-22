@@ -18,17 +18,17 @@ import Scalar from './Scalar'
  */
 export default function getInputObjectType(ObjectType, deep = false) {
 
+    if(ObjectType._typeInput)
+        return ObjectType._typeInput
+
     switch (ObjectType.constructor.name) {
 
         case 'GraphQLObjectType':
 
             let _fields = getConfig(ObjectType)
 
-            if(deep && _fields.id)
+            if(deep && _fields.id && !ObjectType.entityLess)
                 return GraphQLID
-
-            else if(ObjectType._typeInput)
-                return ObjectType._typeInput
 
             return ObjectType._typeInput = new GraphQLInputObjectType({
                 name: `${ObjectType.name}Input`,
@@ -56,7 +56,7 @@ export default function getInputObjectType(ObjectType, deep = false) {
         case 'GraphQLList':
     
             return new GraphQLList(
-                getInputObjectType(ObjectType.ofType)
+                getInputObjectType(ObjectType.ofType, true)
             )
 
     }

@@ -13,7 +13,7 @@ import getConfig from './getConfig'
  * @param {(GraphQLObjectType|GraphQLList|GraphQLScalarType|GraphQLEnumType|GraphQLUnionType)} ObjectType Type to convert
  * @returns Error type
  */
-export default function getErrorType(ObjectType, moreFields = {}) {
+export default function getErrorType(ObjectType, moreFields = {}, deep = false) {
 
     if(ObjectType._typeError)
         return ObjectType._typeError
@@ -22,15 +22,19 @@ export default function getErrorType(ObjectType, moreFields = {}) {
 
         case 'GraphQLObjectType':
 
+            let _fields = getConfig(ObjectType)
+
+            if(deep && _fields.id && !ObjectType.entityLess)
+                return GraphQLString
+
             return ObjectType._typeError = new GraphQLObjectType({
                 name: `${ObjectType.name}Error`,
                 fields() {
-                    let fields = {},
-                        _fields = getConfig(ObjectType)
+                    let fields = {}
                     Object.keys(_fields).forEach(
                         key =>
                             fields[key] = {
-                                type: getErrorType(_fields[key].type)
+                                type: getErrorType(_fields[key].type, moreFields[key] || {}, true)
                             }
                     )
                     return Object.assign(

@@ -45,7 +45,7 @@ export default function getEntityType(ObjectType) {
 
                     let _config = getConfig(config[key].type)
 
-                    if(_config.id && !ObjectType.entityLess)
+                    if(_config.id && !config[key].type.entityLess)
                         type[key] = String
 
                     else

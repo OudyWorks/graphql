@@ -11,7 +11,8 @@ import {
     GraphQLNonNull,
     GraphQLID,
     GraphQLString,
-    key
+    key,
+    GraphQLList
 } from '../'
 import deepClone from 'lodash.clonedeep'
 import flattenObj from 'flatten-obj'
@@ -89,8 +90,15 @@ export default function extender (Entity) {
         static get config() {
             return {
                 type: this.type,
-                resolve: (args, context) =>
-                    this.load(args[key(this.type.name)], context)
+                resolve: (source, args, context) =>
+                    this.load(source[key(this.type.name)], context)
+            }
+        }
+        static get configMany() {
+            return {
+                type: new GraphQLList(this.type),
+                resolve: (source, args, context) =>
+                    this.loadMany(source[key(this.pluralName)], context)
             }
         }
     }
