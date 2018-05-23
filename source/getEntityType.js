@@ -2,6 +2,9 @@ import getConfig from './getConfig'
 
 export default function getEntityType(ObjectType) {
 
+    if(ObjectType._entityType)
+        return ObjectType._entityType
+
     let config = getConfig(ObjectType),
         type = {}
 
@@ -30,7 +33,7 @@ export default function getEntityType(ObjectType) {
                             break
 
                         default:
-                            type[key] = String
+                            type[key] = config[key].entityType || String
                             break
         
                     }
@@ -62,6 +65,6 @@ export default function getEntityType(ObjectType) {
         }
     )
 
-    return type
+    return ObjectType._entityType = type
 
 }
