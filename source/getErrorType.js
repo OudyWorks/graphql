@@ -15,7 +15,7 @@ import getConfig from './getConfig'
  */
 export default function getErrorType(ObjectType, moreFields = {}, deep = false) {
 
-    if(ObjectType._typeError)
+    if(!deep && ObjectType._typeError)
         return ObjectType._typeError
 
     switch (ObjectType.constructor.name) {
@@ -27,7 +27,7 @@ export default function getErrorType(ObjectType, moreFields = {}, deep = false) 
             if(deep && _fields.id && !ObjectType.entityLess)
                 return GraphQLString
 
-            return ObjectType._typeError = new GraphQLObjectType({
+            return ObjectType._typeError || (ObjectType._typeError = new GraphQLObjectType({
                 name: `${ObjectType.name}Error`,
                 fields() {
                     let fields = {}
@@ -42,7 +42,7 @@ export default function getErrorType(ObjectType, moreFields = {}, deep = false) 
                         moreFields
                     )
                 }
-            })
+            }))
 
         case 'GraphQLScalarType':
         case 'GraphQLEnumType':
@@ -53,7 +53,7 @@ export default function getErrorType(ObjectType, moreFields = {}, deep = false) 
         case 'GraphQLList':
     
             return new GraphQLList(
-                getErrorType(ObjectType.ofType)
+                getErrorType(ObjectType.ofType, moreFields, true)
             )
 
     }

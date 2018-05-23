@@ -18,7 +18,7 @@ import Scalar from './Scalar'
  */
 export default function getInputObjectType(ObjectType, deep = false) {
 
-    if(ObjectType._typeInput)
+    if(!deep && ObjectType._typeInput)
         return ObjectType._typeInput
 
     switch (ObjectType.constructor.name) {
@@ -30,7 +30,7 @@ export default function getInputObjectType(ObjectType, deep = false) {
             if(deep && _fields.id && !ObjectType.entityLess)
                 return GraphQLID
 
-            return ObjectType._typeInput = new GraphQLInputObjectType({
+            return ObjectType._typeInput || (ObjectType._typeInput = new GraphQLInputObjectType({
                 name: `${ObjectType.name}Input`,
                 fields() {
                     let fields = {}
@@ -42,7 +42,7 @@ export default function getInputObjectType(ObjectType, deep = false) {
                     )
                     return fields
                 }
-            })
+            }))
 
         case 'GraphQLScalarType':
         case 'GraphQLEnumType':

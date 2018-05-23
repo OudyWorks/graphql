@@ -15,7 +15,7 @@ export default function getSchema(directory) {
     let queryFields = {},
         mutationFields = {},
         subscriptionFields = {},
-        files = recursiveReadSync(directory),
+        files = recursiveReadSync(directory).sort((a, b) => a.length - b.length),
         validTypes = files.filter(
             file =>
                 file.match(typesRgeex)

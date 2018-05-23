@@ -113,6 +113,17 @@ export default function extender (Entity) {
         return getErrorType(this.type, moreFields)
     }
     
+    GraphQLEntity.bindContext = Symbol('bindContext')
+    GraphQLEntity[GraphQLEntity.bindContext] = async function(args, context) {
+        let contextVars = {}
+        this[Entity.context].forEach(
+            key =>
+                contextVars[key] = args[key] || context[key]
+        )
+        await this[Entity.validateContext](contextVars)
+        Object.assign(args, contextVars)
+        Object.assign(context, contextVars)
+    }
     GraphQLEntity.query = Symbol('query')
     GraphQLEntity[GraphQLEntity.query] = function(resolve, options = {args: {}}) {
         this[Entity.context].forEach(
@@ -123,13 +134,11 @@ export default function extender (Entity) {
         )
         return getQueryConfig(
             this.type,
-            (source, args, context, info) => {
-                this[Entity.context].forEach(
-                    key =>
-                        context[key] = args[key] || context[key]
-                )
-                return resolve(source, args, context, info)
-            },
+            (source, args, context, info) =>
+                this[GraphQLEntity.bindContext](args, context).then(
+                    () =>
+                    resolve(source, args, context, info)
+                ),
             options
         )
     }
@@ -145,13 +154,11 @@ export default function extender (Entity) {
         this.type.pluralName = this.pluralName
         return getListQueryConfig(
             this.type,
-            (source, args, context, info) => {
-                this[Entity.context].forEach(
-                    key =>
-                        context[key] = args[key] || context[key]
-                )
-                return resolve(source, args, context, info)
-            },
+            (source, args, context, info) =>
+                this[GraphQLEntity.bindContext](args, context).then(
+                    () =>
+                    resolve(source, args, context, info)
+                ),
             options
         )
     }
@@ -170,13 +177,11 @@ export default function extender (Entity) {
         )
         return getMutationConfig(
             this.type,
-            (source, args, context, info) => {
-                this[Entity.context].forEach(
-                    key =>
-                        context[key] = args[key] || context[key]
-                )
-                return resolve(source, args, context, info)
-            },
+            (source, args, context, info) =>
+                this[GraphQLEntity.bindContext](args, context).then(
+                    () =>
+                    resolve(source, args, context, info)
+                ),
             options
         )
     }
@@ -190,24 +195,12 @@ export default function extender (Entity) {
                     type: new GraphQLNonNull(GraphQLID)
                 }
         )
-        if(!options.resolve)
-            options.resolve = (source, args, context, info) => {
-                this[Entity.context].forEach(
-                    key =>
-                        context[key] = args[key] || context[key]
-                )
-                return source
-            }
-        else {
-            let resolve = options.resolve
-            options.resolve = (source, args, context, info) => {
-                this[Entity.context].forEach(
-                    key =>
-                        context[key] = args[key] || context[key]
-                )
-                return resolve(source, args, context, info)
-            }
-        }
+        let resolve = options.resolve
+        options.resolve = (source, args, context, info) =>
+            this[GraphQLEntity.bindContext](args, context).then(
+                () =>
+                resolve ? resolve(source, args, context, info) : source
+            )
         return getSubscriptionConfig(
             this.type,
             subscribe,
