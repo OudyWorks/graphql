@@ -45,7 +45,7 @@ export default function extender (Entity) {
                                 if(typeof this.validate == 'function') {
                                     bindObject.errors = {}
                                     bindObject.erred = {}
-                                    this.validate(state, bindObject.errors).then(
+                                    this.validate(state, bindObject.errors, this[Entity.context]).then(
                                         () => {
                                             bindObject.erred = !!Object.values(flatten(bindObject.errors)).filter(e => e).length
                                             resolve()
@@ -70,7 +70,9 @@ export default function extender (Entity) {
                                             newObject: this,
                                             difference,
                                             changes,
-                                            changed: !!changes.length
+                                            changed: !!changes.length,
+                                            context: this[Entity.context],
+                                            id: this.id
                                         }
                                     )
                                 )
@@ -84,6 +86,19 @@ export default function extender (Entity) {
                         resolve(this)
 
                     }
+                }
+            )
+        }
+        save(bind) {
+            return super.save(bind).then(
+                id => {
+                    if(bind && bind.changed && !bind.erred) {
+                        GraphQLEntity.pubsub.publish(
+                            key(this.name),
+                            this
+                        )
+                    }
+                    return id
                 }
             )
         }

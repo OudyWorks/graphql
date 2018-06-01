@@ -51,18 +51,10 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
                                 )
                         }
                     ).then(
-                        bind => {
-                            if(bind.changed && !bind.erred) {
-                                GraphQLEntity.pubsub.publish(
-                                    name,
-                                    object
-                                )
-                            }
-                            return {
-                                [name]: object,
-                                ...bind
-                            }
-                        }
+                        bind => ({
+                            [name]: object,
+                            ...bind
+                        })
                     )
             )
         }
