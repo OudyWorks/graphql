@@ -94,7 +94,7 @@ export default function extender (Entity) {
                 id => {
                     if(bind && bind.changed && !bind.erred) {
                         GraphQLEntity.pubsub.publish(
-                            key(this.name),
+                            key(this.constructor.name),
                             this
                         )
                     }
