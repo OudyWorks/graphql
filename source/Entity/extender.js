@@ -103,17 +103,23 @@ export default function extender (Entity) {
             )
         }
         static get config() {
+            return this.configFor(key(this.type.name))
+        }
+        static get configMany() {
+            return this.configManyFor(key(this.pluralName))
+        }
+        static configFor(key) {
             return {
                 type: this.type,
                 resolve: (source, args, context) =>
-                    this.load(source[key(this.type.name)], context)
+                    this.load(source[key], context)
             }
         }
-        static get configMany() {
+        static configManyFor(key) {
             return {
                 type: new GraphQLList(this.type),
                 resolve: (source, args, context) =>
-                    this.loadMany(source[key(this.pluralName)], context)
+                    this.loadMany(source[key], context)
             }
         }
     }
