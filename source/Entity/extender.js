@@ -141,7 +141,7 @@ export default function extender (Entity) {
             key =>
                 contextVars[key] = args[key] || context[key]
         )
-        this[Entity.validateContext](contextVars).then(
+        return this[Entity.validateContext](contextVars).then(
             () => {
                 Object.assign(args, contextVars)
                 Object.assign(context, contextVars)
