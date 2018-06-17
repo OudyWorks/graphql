@@ -135,15 +135,18 @@ export default function extender (Entity) {
     }
     
     GraphQLEntity.bindContext = Symbol('bindContext')
-    GraphQLEntity[GraphQLEntity.bindContext] = async function(args, context) {
+    GraphQLEntity[GraphQLEntity.bindContext] = function(args, context) {
         let contextVars = {}
         this[Entity.context].forEach(
             key =>
                 contextVars[key] = args[key] || context[key]
         )
-        await this[Entity.validateContext](contextVars)
-        Object.assign(args, contextVars)
-        Object.assign(context, contextVars)
+        this[Entity.validateContext](contextVars).then(
+            () => {
+                Object.assign(args, contextVars)
+                Object.assign(context, contextVars)
+            }
+        )
     }
     GraphQLEntity.query = Symbol('query')
     GraphQLEntity[GraphQLEntity.query] = function(resolve, options = {args: {}}) {
@@ -158,7 +161,7 @@ export default function extender (Entity) {
             (source, args, context, info) =>
                 this[GraphQLEntity.bindContext](args, context).then(
                     () =>
-                    resolve(source, args, context, info)
+                        resolve(source, args, context, info)
                 ),
             options
         )
@@ -178,7 +181,7 @@ export default function extender (Entity) {
             (source, args, context, info) =>
                 this[GraphQLEntity.bindContext](args, context).then(
                     () =>
-                    resolve(source, args, context, info)
+                        resolve(source, args, context, info)
                 ),
             options
         )
@@ -201,7 +204,7 @@ export default function extender (Entity) {
             (source, args, context, info) =>
                 this[GraphQLEntity.bindContext](args, context).then(
                     () =>
-                    resolve(source, args, context, info)
+                        resolve(source, args, context, info)
                 ),
             options
         )
@@ -220,7 +223,7 @@ export default function extender (Entity) {
         options.resolve = (source, args, context, info) =>
             this[GraphQLEntity.bindContext](args, context).then(
                 () =>
-                resolve ? resolve(source, args, context, info) : source
+                    resolve ? resolve(source, args, context, info) : source
             )
         return getSubscriptionConfig(
             this.type,

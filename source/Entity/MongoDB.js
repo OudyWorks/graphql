@@ -18,27 +18,23 @@ class MongoDBEntity extends GraphQLEntity {
 
 MongoDBEntity[MongoDBEntity.query] = function(resolve, options = {args: {}}) {
     if(!resolve)
-        resolve = (source, args, context, info) => {
-            return this.load(args.id, context)
-        }
-    let query = GraphQLEntity[MongoDBEntity.query].bind(this)(resolve, options)
-    return query
+        resolve = (source, args, context, info) =>
+            this.load(args.id, context)
+    return GraphQLEntity[MongoDBEntity.query].bind(this)(resolve, options)
 }
 
 MongoDBEntity[MongoDBEntity.listQuery] = function(resolve, options = {fields: {}, args: {}}) {
     if(!resolve)
-        resolve = (source, args, context, info) => {
-            return this.loadAll(args, context)
-        }
-    let query = GraphQLEntity[MongoDBEntity.listQuery].bind(this)(resolve, options)
-    return query
+        resolve = (source, args, context, info) =>
+            this.loadAll(args, context)
+    return GraphQLEntity[MongoDBEntity.listQuery].bind(this)(resolve, options)
 }
 
 MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {}, args: {}, errorFields: {}}) {
     if(!resolve) {
         let name = key(this.name)
-        resolve = (source, args, context, info) => {
-            return this.load(args.id, context).then(
+        resolve = (source, args, context, info) =>
+            this.load(args.id, context).then(
                 object =>
                     object.bind(args[name]).then(
                         bind => {
@@ -57,15 +53,12 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
                         })
                     )
             )
-        }
     }
-    let query = GraphQLEntity[MongoDBEntity.mutation].bind(this)(resolve, options)
-    return query
+    return GraphQLEntity[MongoDBEntity.mutation].bind(this)(resolve, options)
 }
 
 MongoDBEntity[MongoDBEntity.subscription] = function(subscribe, options = {args: {}, resolve: undefined}) {
     if(!subscribe)
-        // subscribe = (source, args, context, info) => {
         subscribe = withFilter(
             (source, args, context, info) =>
                 GraphQLEntity.pubsub.asyncIterator(key(this.name)),
@@ -78,8 +71,7 @@ MongoDBEntity[MongoDBEntity.subscription] = function(subscribe, options = {args:
                 return false
             }
         )
-    let query = GraphQLEntity[MongoDBEntity.subscription].bind(this)(subscribe, options)
-    return query
+    return GraphQLEntity[MongoDBEntity.subscription].bind(this)(subscribe, options)
 }
 
 
