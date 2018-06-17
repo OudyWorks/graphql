@@ -1,6 +1,6 @@
 import express from 'express'
-import graphql from 'express-graphql'
 import {
+    graphqlExpress,
     graphiqlExpress,
 } from 'apollo-server-express'
 import bodyParser from 'body-parser'
@@ -28,7 +28,7 @@ export default class Server {
 
         // this.app.use(bodyParser.json({limit: '1mb'}))
 
-        this.app.use(/^\/$/, graphql(
+        this.app.use(/^\/$/, bodyParser.json(), graphqlExpress(
             request =>
                 this.context(request).then(
                     context =>
