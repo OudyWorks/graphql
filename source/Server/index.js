@@ -26,9 +26,7 @@ export default class Server {
 
         this.app = express()
 
-        // this.app.use(bodyParser.json({limit: '1mb'}))
-
-        this.app.use(/^\/$/, bodyParser.json(), graphqlExpress(
+        this.app.use(/^\/$/, bodyParser.json({limit: '100mb'}), graphqlExpress(
             request =>
                 this.context(request).then(
                     context =>
