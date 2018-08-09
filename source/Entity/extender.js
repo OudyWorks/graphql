@@ -17,7 +17,7 @@ import {
 import deepClone from 'lodash.clonedeep'
 import flattenObj from 'flatten-obj'
 import {
-    diff
+    detailedDiff, diff as _diff
 } from 'deep-object-diff'
 import { PubSub } from 'graphql-subscriptions'
 import FirstGraphQLEntity from './index'
@@ -59,7 +59,8 @@ export default function extender (Entity) {
 
                                 bind(this, state, getEntityType(this.constructor.type))
 
-                                let difference = flatten(diff(oldObject, this)),
+                                let difference = flatten(_diff(oldObject, this)),
+                                    diff = detailedDiff(oldObject, this),
                                     changes = Object.keys(difference)
 
                                 resolve(
@@ -69,6 +70,7 @@ export default function extender (Entity) {
                                             oldObject,
                                             newObject: this,
                                             difference,
+                                            diff,
                                             changes,
                                             changed: !!changes.length,
                                             context: this[Entity.context],
