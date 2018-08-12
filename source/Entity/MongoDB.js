@@ -38,7 +38,7 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
                 object =>
                     object.bind(args[name]).then(
                         bind => {
-                            if(bind.erred)
+                            if(bind.erred || !bind.changes.length)
                                 return Promise.resolve(bind)
                             else
                                 return object.save(bind).then(

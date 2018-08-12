@@ -1,6 +1,6 @@
 {
   "name": "@oudyworks/graphql",
-  "version": "1.0.70",
+  "version": "1.0.72",
   "description": "Some tooling for GraphQL",
   "main": "index.js",
   "scripts": {
@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/OudyWorks/graphql#readme",
   "dependencies": {
-    "@oudyworks/drivers": "^1.0.24",
-    "@oudyworks/entity": "^1.1.1",
+    "@oudyworks/drivers": "^1.0.27",
+    "@oudyworks/entity": "^1.1.3",
     "apollo-server-express": "^1.4.0",
     "body-parser": "^1.18.3",
     "case": "^1.5.5",
