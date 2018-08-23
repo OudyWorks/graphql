@@ -99,7 +99,7 @@ export default function extender (Entity) {
                     if(bind && bind.changed && !bind.erred && this.constructor.pubsub)
                         this.constructor.pubsub.publish(
                             key(this.constructor.name),
-                            this
+                            bind
                         )
                     return id
                 }

@@ -2,13 +2,10 @@ import {
     GraphQLObjectType,
     GraphQLNonNull,
     GraphQLID,
-    GraphQLBoolean,
-    GraphQLList,
-    GraphQLString,
-    key
+    key,
+    getInputObjectType,
+    getMutationObjectType
 } from './'
-import getInputObjectType from './getInputObjectType'
-import getErrorType from './getErrorType'
 
 /**
  * get Mutation Config for GraphQLObjectType
@@ -22,29 +19,7 @@ import getErrorType from './getErrorType'
 export default function getMutationConfig(ObjectType, resolve,  options = {fields: {}, args: {}, errorFields: {}}) {
     return {
         [key(ObjectType.name)] : {
-            type: new GraphQLObjectType({
-                name: `${ObjectType.name}Mutation`,
-                fields: Object.assign(
-                    {
-                        [key(ObjectType.name)]: {
-                            type: ObjectType
-                        },
-                        erred: {
-                            type: GraphQLBoolean
-                        },
-                        errors: {
-                            type: getErrorType(ObjectType, options.errorFields || {})
-                        },
-                        changed: {
-                            type: GraphQLBoolean
-                        },
-                        changes: {
-                            type: new GraphQLList(GraphQLString)
-                        }
-                    },
-                    options.fields || {}
-                )
-            }),
+            type: getMutationObjectType(ObjectType, options),
             args: Object.assign(
                 {
                     [key(ObjectType.name)]: {

@@ -1,12 +1,13 @@
 import {
     GraphQLID,
-    key
+    key,
+    getMutationObjectType
 } from './'
 
 export default function getSubscriptionConfig(ObjectType, subscribe, options = {args: {}, resolve: undefined}) {
     return {
         [key(ObjectType.name)] : {
-            type: ObjectType,
+            type: getMutationObjectType(ObjectType),
             args: Object.assign(
                 {
                     id: {
