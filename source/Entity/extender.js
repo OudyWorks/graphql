@@ -19,7 +19,9 @@ import flattenObj from 'flatten-obj'
 import {
     detailedDiff, diff as _diff
 } from 'deep-object-diff'
-import { PubSub } from 'graphql-subscriptions'
+import {
+    withFilter
+} from 'graphql-subscriptions'
 import FirstGraphQLEntity from './index'
 const flatten = flattenObj()
 
@@ -94,12 +96,11 @@ export default function extender (Entity) {
         save(bind) {
             return super.save(bind).then(
                 id => {
-                    if(bind && bind.changed && !bind.erred) {
-                        GraphQLEntity.pubsub.publish(
+                    if(bind && bind.changed && !bind.erred && this.constructor.pubsub)
+                        this.constructor.pubsub.publish(
                             key(this.constructor.name),
                             this
                         )
-                    }
                     return id
                 }
             )
@@ -212,7 +213,7 @@ export default function extender (Entity) {
         )
     }
 
-    GraphQLEntity.pubsub = new PubSub()
+    // GraphQLEntity.pubsub = new PubSub()
     GraphQLEntity.subscription = Symbol('subscription')
     GraphQLEntity[GraphQLEntity.subscription] = function(subscribe, options = {args: {}, resolve: undefined}) {
         this[Entity.context].forEach(
@@ -226,6 +227,19 @@ export default function extender (Entity) {
             this[GraphQLEntity.bindContext](args, context).then(
                 () =>
                     resolve ? resolve(source, args, context, info) : source
+            )
+        if(!subscribe)
+            subscribe = withFilter(
+                (source, args, context, info) =>
+                    this.pubsub.asyncIterator(key(this.name)),
+                (source, args, context, info) => {
+                    if(source) {
+                        if(args.id)
+                            return args.id == `${source.id}`
+                        return true
+                    }
+                    return false
+                }
             )
         return getSubscriptionConfig(
             this.type,

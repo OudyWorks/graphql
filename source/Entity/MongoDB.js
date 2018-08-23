@@ -1,7 +1,6 @@
 import Entity from '@oudyworks/entity/MongoDB'
 import extender from './extender'
 import key from '../key'
-import {withFilter} from 'graphql-subscriptions'
 
 const   GraphQLEntity = extender(Entity)
 
@@ -56,24 +55,5 @@ MongoDBEntity[MongoDBEntity.mutation] = function(resolve, options = {fields: {},
     }
     return GraphQLEntity[MongoDBEntity.mutation].bind(this)(resolve, options)
 }
-
-MongoDBEntity[MongoDBEntity.subscription] = function(subscribe, options = {args: {}, resolve: undefined}) {
-    if(!subscribe)
-        subscribe = withFilter(
-            (source, args, context, info) =>
-                GraphQLEntity.pubsub.asyncIterator(key(this.name)),
-            (source, args, context, info) => {
-                if(source) {
-                    if(args.id)
-                        return args.id == `${source.id}`
-                    return true
-                }
-                return false
-            }
-        )
-    return GraphQLEntity[MongoDBEntity.subscription].bind(this)(subscribe, options)
-}
-
-
 
 export default MongoDBEntity

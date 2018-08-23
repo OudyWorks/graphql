@@ -107,7 +107,7 @@ export default function getSchema(directory) {
 
     validTypes.forEach(
         key =>
-            Object.assign(subscriptionFields, types[key][types[key].subscription]())
+            types[key].pubsub && Object.assign(subscriptionFields, types[key][types[key].subscription]())
     )
 
     let schema = {}
