@@ -238,7 +238,7 @@ export default function extender (Entity) {
                 (source, args, context, info) => {
                     if(source) {
                         if(args.id)
-                            return args.id == `${source.id}`
+                            return args.id == `${source[key(this.name)].id}`
                         return true
                     }
                     return false
