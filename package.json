@@ -1,0 +1,26 @@
+{
+  "name": "@oudy/graphql",
+  "version": "1.0.0",
+  "description": "Some tooling for GraphQL",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "graphql"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OudyWorks/graphql.git"
+  },
+  "author": "Ayoub Oudmane <ayoub@oudmane.me>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OudyWorks/graphql/issues"
+  },
+  "homepage": "https://github.com/OudyWorks/graphql#readme",
+  "peerDependencies": {
+    "graphql": "14.x"
+  },
+  "dependencies": {
+    "graphql": "^14.1.1"
+  }
+}
