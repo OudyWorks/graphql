@@ -2,7 +2,7 @@ import getConfig from './getConfig'
 
 export default function getEntityType(ObjectType) {
 
-    if(ObjectType._entityType)
+    if (ObjectType._entityType)
         return ObjectType._entityType
 
     let config = getConfig(ObjectType),
@@ -11,56 +11,60 @@ export default function getEntityType(ObjectType) {
     Object.keys(config).forEach(
         key => {
 
-            switch(config[key].type.constructor.name) {
+            if (config[key]._entityType)
+                type[key] = config[key]._entityType
 
-                case 'GraphQLScalarType':
+            else
+                switch (config[key].type.constructor.name) {
 
-                    switch(config[key].type.name) {
+                    case 'GraphQLScalarType':
 
-                        case 'ID':
-                        case 'String':
+                        switch (config[key].type.name) {
+
+                            case 'ID':
+                            case 'String':
+                                type[key] = String
+                                break
+
+                            case 'Int':
+                            case 'Float':
+                                type[key] = Number
+                                break
+
+
+                            case 'Boolean':
+                                type[key] = Boolean
+                                break
+
+                            default:
+                                type[key] = config[key].entityType || String
+                                break
+
+                        }
+
+                        break
+
+                    case 'GraphQLList':
+                        type[key] = Array
+                        break
+
+                    case 'GraphQLObjectType':
+
+                        let _config = getConfig(config[key].type)
+
+                        if (_config.id && !config[key].type.entityLess)
                             type[key] = String
-                            break
-        
-                        case 'Int':
-                        case 'Float':
-                            type[key] = Number
-                            break
-                        
-                        
-                        case 'Boolean':
-                            type[key] = Boolean
-                            break
 
-                        default:
-                            type[key] = config[key].entityType || String
-                            break
-        
-                    }
+                        else
+                            type[key] = getEntityType(config[key].type)
 
-                    break
-                
-                case 'GraphQLList':
-                    type[key] = Array
-                    break
+                        break
 
-                case 'GraphQLObjectType':
-
-                    let _config = getConfig(config[key].type)
-
-                    if(_config.id && !config[key].type.entityLess)
+                    default:
                         type[key] = String
+                        break
 
-                    else
-                        type[key] = getEntityType(config[key].type)
-
-                    break
-                
-                default:
-                    type[key] = String
-                    break
-
-            }
+                }
 
         }
     )
