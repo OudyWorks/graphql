@@ -4,7 +4,7 @@ const {
   key = require('./key'),
   getMutationObjectType = require('./getMutationObjectType')
 
-module.exports = function getSubscriptionConfig(Type, subscribe, options = { args: {}, resolve: undefined }) {
+module.exports = function getSubscriptionConfig(Type, subscribe, options = { args: {} }, resolve = undefined) {
   return {
     [key(Type.name)]: {
       type: getMutationObjectType(Type),
@@ -17,7 +17,9 @@ module.exports = function getSubscriptionConfig(Type, subscribe, options = { arg
         options.args || {}
       ),
       subscribe,
-      resolve: options.resolve
+      resolve: resolve || function (source, args, context, info) {
+        return source
+      }
     }
   }
 }

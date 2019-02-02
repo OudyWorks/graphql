@@ -1,7 +1,9 @@
 const {
   $type,
-  $input,
-  $error
+  $query,
+  $listQuery,
+  $mutation,
+  $subscription
 } = Entity = require('./index'),
 {
   GraphQLObjectType,
@@ -38,8 +40,10 @@ test(
       }
     )
     User.emit('test', true)
-    console.log(User[$error]().getFields())
-    console.log(User[$input]().getFields())
+    console.log(User[$query]())
+    console.log(User[$listQuery]())
+    console.log(User[$mutation]())
+    console.log(User[$subscription]())
     console.log(User[$type].pluralName)
   }
 )
