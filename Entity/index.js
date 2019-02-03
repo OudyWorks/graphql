@@ -19,7 +19,9 @@ const {
     getQueryConfig,
     getListQueryConfig,
     getMutationConfig,
-    getSubscriptionConfig
+    getSubscriptionConfig,
+    GraphQLNonNull,
+    GraphQLID
   } = require('@oudy/graphql'),
   {
     withFilter
@@ -76,6 +78,12 @@ class GraphQLEntity extends Entity {
       }
 
       static [$query](resolve, options = { args: {} }) {
+        this[$context].forEach(
+          key =>
+            options.args[key] = {
+              type: new GraphQLNonNull(GraphQLID)
+            }
+        )
         // Todo use resolve
         return getQueryConfig(
           this[$type],
@@ -89,6 +97,12 @@ class GraphQLEntity extends Entity {
       }
 
       static [$listQuery](resolve, options = { fields: {}, args: {} }) {
+        this[$context].forEach(
+          key =>
+            options.args[key] = {
+              type: new GraphQLNonNull(GraphQLID)
+            }
+        )
         // Todo use resolve
         return getListQueryConfig(
           this[$type],
@@ -102,6 +116,12 @@ class GraphQLEntity extends Entity {
       }
 
       static [$mutation](resolve, options = { fields: {}, args: {}, errorFields: {} }) {
+        this[$context].forEach(
+          key =>
+            options.args[key] = {
+              type: new GraphQLNonNull(GraphQLID)
+            }
+        )
         // Todo use resolve
         let name = key(this.name)
         return getMutationConfig(
@@ -136,6 +156,12 @@ class GraphQLEntity extends Entity {
       static [$subscription](subscribe, options = { args: {} }, resolve = undefined) {
         if (!this[$pubsub])
           return {}
+        this[$context].forEach(
+          key =>
+            options.args[key] = {
+              type: GraphQLID
+            }
+        )
         const name = key(this.name)
         return getSubscriptionConfig(
           this[$type],
@@ -147,9 +173,10 @@ class GraphQLEntity extends Entity {
               ),
             (source, args, context, info) => {
               if (source) {
-                if (args.id)
-                  return args.id == `${source[name].id}`
-                return true
+                return ['id'].concat(this[$context]).every(
+                  key =>
+                    !args[key] || args[key] == `${source[name][key]}`
+                )
               }
               return false
             }
