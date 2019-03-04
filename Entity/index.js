@@ -27,7 +27,7 @@ const {
     withFilter
   } = require('graphql-subscriptions')
 
-class GraphQLEntity extends Entity {
+class GraphQLEntityWrap extends Entity {
   static use(Entity) {
 
     const GraphQLEntity = class extends Entity {
@@ -216,25 +216,31 @@ class GraphQLEntity extends Entity {
     )
 
     GraphQLEntity[$entity] = true
+    GraphQLEntityWrap.setSymbols(GraphQLEntity)
 
     return GraphQLEntity
 
   }
+
+  static setSymbols(Entity) {
+    Object.assign(
+      Entity,
+      {
+        $type,
+        $query,
+        $listQuery,
+        $mutation,
+        $subscription,
+        $pubsub,
+        $bindContext,
+        $boundedContext,
+        $entity
+      }
+    )
+  }
+
 }
 
-module.exports = GraphQLEntity
+GraphQLEntityWrap.setSymbols(GraphQLEntityWrap)
 
-Object.assign(
-  module.exports,
-  {
-    $type,
-    $query,
-    $listQuery,
-    $mutation,
-    $subscription,
-    $pubsub,
-    $bindContext,
-    $boundedContext,
-    $entity
-  }
-)
+module.exports = GraphQLEntityWrap

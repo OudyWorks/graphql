@@ -20,14 +20,15 @@ module.exports = function getInputObjectType(Type, deep = false) {
       if (deep && _fields.id && !Type.entityLess)
         return GraphQLID
 
-      return Type[$type] = new GraphQLInputObjectType({
+      return Type[$type] = Type[$type] || new GraphQLInputObjectType({
         name: `${Type.name}Input`,
         fields() {
           let fields = {}
           Object.keys(_fields).forEach(
             key =>
               fields[key] = {
-                type: getInputObjectType(_fields[key].type, true)
+                type: getInputObjectType(_fields[key].type, true),
+                defaultValue: _fields[key].defaultValue
               }
           )
           return fields

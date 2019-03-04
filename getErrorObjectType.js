@@ -19,7 +19,7 @@ module.exports = function getErrorObjectType(Type, moreFields = {}, deep = false
       if (deep && _fields.id && !Type.entityLess)
         return GraphQLString
 
-      return Type[$type] = new GraphQLObjectType({
+      return Type[$type] = Type[$type] || new GraphQLObjectType({
         name: `${Type.name}Error`,
         fields() {
           let fields = {}
