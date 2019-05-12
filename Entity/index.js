@@ -84,14 +84,14 @@ class GraphQLEntityWrap extends Entity {
               type: new GraphQLNonNull(GraphQLID)
             }
         )
-        // Todo use resolve
         return getQueryConfig(
           this[$type],
-          (source, args, context, info) =>
-            this[$bindContext](args, context).then(
+          resolve || ((source, args, context, info) => {
+            return this[$bindContext](args, context).then(
               () =>
                 this.load(args.id, context)
-            ),
+            )
+          }),
           options
         )
       }
@@ -103,14 +103,15 @@ class GraphQLEntityWrap extends Entity {
               type: new GraphQLNonNull(GraphQLID)
             }
         )
-        // Todo use resolve
+        this[$type].pluralName = this[$pluralName]()
         return getListQueryConfig(
           this[$type],
-          (source, args, context, info) =>
-            this[$bindContext](args, context).then(
+          resolve || ((source, args, context, info) => {
+            return this[$bindContext](args, context).then(
               () =>
                 this.loadAll(args, context)
-            ),
+            )
+          }),
           options
         )
       }
@@ -122,12 +123,11 @@ class GraphQLEntityWrap extends Entity {
               type: new GraphQLNonNull(GraphQLID)
             }
         )
-        // Todo use resolve
         let name = key(this.name)
         return getMutationConfig(
           this[$type],
-          (source, args, context, info) =>
-            this[$bindContext](args, context).then(
+          resolve || ((source, args, context, info) => {
+            return this[$bindContext](args, context).then(
               () =>
                 this.load(args.id, context).then(
                   object =>
@@ -148,7 +148,8 @@ class GraphQLEntityWrap extends Entity {
                       })
                     )
                 )
-            ),
+            )
+          }),
           options
         )
       }
@@ -199,19 +200,10 @@ class GraphQLEntityWrap extends Entity {
       }
     }
 
-    GraphQLEntity.__defineSetter__(
-      $type,
-      function (type) {
-        this[Entity.$type] = getEntityType(type)
-        type.pluralName = this[$pluralName]()
-        this._type = type
-      }
-    )
-
     GraphQLEntity.__defineGetter__(
-      $type,
-      function (type) {
-        return this._type
+      Entity.$type,
+      function () {
+        return this._type || (this._type = getEntityType(this[$type]))
       }
     )
 
