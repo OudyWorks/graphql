@@ -1,12 +1,13 @@
-const $type = Symbol('type'),
-  {
-    GraphQLInputObjectType,
-    GraphQLList,
-    GraphQLID
-  } = require('graphql'),
-  Scalar = require('./Scalar')
+import {
+  GraphQLInputObjectType,
+  GraphQLList,
+  GraphQLID
+} from 'graphql'
+import Scalar from './Scalar'
 
-module.exports = function getInputObjectType(Type, deep = false) {
+const $type = Symbol('type')
+
+export function getInputObjectType(Type, deep = false) {
 
   if (!deep && Type[$type])
     return Type[$type]

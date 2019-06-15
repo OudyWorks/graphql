@@ -1,11 +1,12 @@
-const $type = Symbol('type'),
-  {
-    GraphQLObjectType,
-    GraphQLList,
-    GraphQLString
-  } = require('graphql')
+import {
+  GraphQLObjectType,
+  GraphQLList,
+  GraphQLString
+} from 'graphql'
 
-module.exports = function getErrorObjectType(Type, moreFields = {}, deep = false) {
+const $type = Symbol('type')
+
+export function getErrorObjectType(Type, moreFields = {}, deep = false) {
 
   if (!deep && Type[$type])
     return Type[$type]

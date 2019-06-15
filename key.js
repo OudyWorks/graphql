@@ -1,6 +1,6 @@
-const Case = require('case')
+import Case from 'case'
 
-module.exports = function key(key) {
+export function key(key) {
   if (key.match(/^[A-Z]+s?$/))
     key = key.toLowerCase()
   return Case.camel(key)

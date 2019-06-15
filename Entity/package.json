@@ -1,6 +1,6 @@
 {
   "name": "@oudy/graphql-entity",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "graphql-subscriptions": "1.x"
   },
   "dependencies": {
-    "@oudy/entity": "^1.0.0",
-    "@oudy/graphql": "^1.0.9",
+    "@oudy/entity": "^1.0.25",
+    "@oudy/graphql": "^1.0.17",
     "graphql-subscriptions": "^1.0.0"
   },
   "devDependencies": {

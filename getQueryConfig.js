@@ -1,10 +1,12 @@
-const {
+import {
   GraphQLNonNull,
   GraphQLID
-} = require('graphql'),
-  key = require('./key')
+} from 'graphql'
+import {
+  key
+} from './key'
 
-module.exports = function getQueryConfig(Type, resolve, options = { args: {} }) {
+export function getQueryConfig(Type, resolve, options = { args: {} }) {
   return {
     [key(Type.name)]: {
       type: Type,

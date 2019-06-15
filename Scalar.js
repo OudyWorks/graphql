@@ -1,9 +1,9 @@
-const {
+import {
   GraphQLScalarType
-} = require('graphql'),
-  {
-    Kind
-  } = require('graphql/language')
+} from 'graphql'
+import {
+  Kind
+} from 'graphql/language'
 
 function parseLiteral(ast) {
   switch (ast.kind) {
@@ -28,7 +28,7 @@ function parseLiteral(ast) {
   }
 }
 
-module.exports = new GraphQLScalarType({
+export default new GraphQLScalarType({
   name: 'Scalar',
   serialize(value) {
     return value

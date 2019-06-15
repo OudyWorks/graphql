@@ -1,14 +1,19 @@
-const {
+import {
   GraphQLObjectType,
   GraphQLList,
   GraphQLString,
   GraphQLBoolean
-} = require('graphql'),
-  key = require('./key'),
-  getErrorObjectType = require('./getErrorObjectType'),
-  $type = Symbol('type')
+} from 'graphql'
+import {
+  key
+} from './key'
+import {
+  getErrorObjectType
+} from './getErrorObjectType'
 
-module.exports = function getMutationType(Type, options = { fields: {}, errorFields: {} }) {
+const $type = Symbol('type')
+
+export function getMutationObjectType(Type, options = { fields: {}, errorFields: {} }) {
   return Type[$type] || (Type[$type] = new GraphQLObjectType({
     name: `${Type.name}Mutation`,
     fields: Object.assign(

@@ -1,10 +1,14 @@
-const {
+import {
   GraphQLID
-} = require('graphql'),
-  key = require('./key'),
-  getMutationObjectType = require('./getMutationObjectType')
+} from 'graphql'
+import {
+  key
+} from './key'
+import {
+  getMutationObjectType
+} from './getMutationObjectType'
 
-module.exports = function getSubscriptionConfig(Type, subscribe, options = { args: {} }, resolve = undefined) {
+export function getSubscriptionConfig(Type, subscribe, options = { args: {} }, resolve = undefined) {
   return {
     [key(Type.name)]: {
       type: getMutationObjectType(Type),

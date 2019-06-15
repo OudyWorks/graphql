@@ -1,12 +1,14 @@
-const {
+import {
   GraphQLObjectType,
   GraphQLList,
-  GraphQLInt,
-} = require('graphql'),
-  key = require('./key'),
-  plural = require('plural')
+  GraphQLInt
+} from 'graphql'
+import {
+  key
+} from './key'
+import plural from 'plural'
 
-module.exports = function getListQueryConfig(Type, resolve, options = { fields: {}, args: {} }) {
+export function getListQueryConfig(Type, resolve, options = { fields: {}, args: {} }) {
   let pluralName = Type.pluralName || plural(Type.name)
   return {
     [key(pluralName)]: {

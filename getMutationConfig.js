@@ -1,12 +1,18 @@
-const {
+import {
   GraphQLNonNull,
   GraphQLID
-} = require('graphql'),
-  getMutationObjectType = require('./getMutationObjectType'),
-  getInputObjectType = require('./getInputObjectType'),
-  key = require('./key')
+} from 'graphql'
+import {
+  getMutationObjectType
+} from './getMutationObjectType'
+import {
+  getInputObjectType
+} from './getInputObjectType'
+import {
+  key
+} from './key'
 
-module.exports = function getMutationConfig(Type, resolve, options = { fields: {}, args: {}, errorFields: {} }) {
+export function getMutationConfig(Type, resolve, options = { fields: {}, args: {}, errorFields: {} }) {
   return {
     [key(Type.name)]: {
       type: getMutationObjectType(Type, options),
