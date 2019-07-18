@@ -1,6 +1,6 @@
 {
   "name": "@oudy/graphql",
-  "version": "1.0.17",
+  "version": "1.0.21",
   "description": "Some tooling for GraphQL",
   "main": "index.js",
   "scripts": {
@@ -29,6 +29,8 @@
     "plural": "^1.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
     "jest": "^23.6.0"
   }
 }

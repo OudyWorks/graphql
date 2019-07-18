@@ -40,17 +40,6 @@ export {
   $entity
 }
 
-export {
-  $defaultValues,
-  $context,
-  $id,
-  $loaded,
-  $useBind,
-  $validateContext,
-  $validatedContext,
-  $pluralName
-} from '@oudy/entity'
-
 export function use(Entity) {
 
   const GraphQLEntity = class extends Entity {
