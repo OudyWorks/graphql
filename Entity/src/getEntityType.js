@@ -1,8 +1,8 @@
-const {
-    $type
-  } = require('@oudy/entity')
+import {
+  $type
+} from '@oudy/entity'
 
-module.exports = function getEntityType(Type) {
+export default function getEntityType(Type) {
 
   if (Type[$type])
     return Type[$type]

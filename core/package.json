@@ -1,10 +1,11 @@
 {
   "name": "@oudy/graphql",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Some tooling for GraphQL",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "babel src --out-dir npm"
   },
   "keywords": [
     "graphql"
@@ -20,8 +21,7 @@
   },
   "homepage": "https://github.com/OudyWorks/graphql#readme",
   "peerDependencies": {
-    "graphql": "14.x",
-    "plural": "1.x"
+    "graphql": "14.x"
   },
   "dependencies": {
     "case": "^1.6.1",
@@ -29,6 +29,7 @@
     "plural": "^1.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.6.4",
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
     "jest": "^23.6.0"

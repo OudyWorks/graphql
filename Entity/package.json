@@ -1,10 +1,11 @@
 {
   "name": "@oudy/graphql-entity",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "babel src --out-dir npm"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,9 @@
     "graphql-subscriptions": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
     "jest": "^23.6.0"
   }
 }
